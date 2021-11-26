@@ -49,13 +49,12 @@ void Widget::on_pushButton_clicked()
                           ui->textBrowser->append("ID= " + flag.setNum(devInfo[i].ID));
                          // printf("  LocId=0x%x\n",devInfo[i].LocId);
                           ui->textBrowser->append("LocId= " + flag.setNum(devInfo[i].LocId));
-                         printf("  SerialNumber=%s\n",devInfo[i].SerialNumber);
-                          ui->textBrowser->append("SerialNumber= " + QString::fromUtf16((ushort*)(devInfo[i].SerialNumber)));
-
-                          printf("  Description=%s\n",devInfo[i].Description);
-                          ui->textBrowser->append("Description= " + QString::fromUtf16((ushort*)(devInfo[i].Description)));
+                          //printf("  SerialNumber=%s\n",devInfo[i].SerialNumber);
+                          ui->textBrowser->append("SerialNumber= " + QString::fromAscii((devInfo[i].SerialNumber)));
+                          //printf("  Description=%s\n",devInfo[i].Description);
+                          ui->textBrowser->append("Description= " + QString::fromAscii(((devInfo[i].Description))));
                           printf("  ftHandle=0x%x\n",devInfo[i].ftHandle);
-                       //   ui->textBrowser->append("ftHandle= " + flag.setNum(devInfo[i].ftHandle));
+                       //  ui->textBrowser->append("ftHandle= " + flag.setNum(devInfo[i].ftHandle));
                       }
        }
     }
@@ -63,4 +62,40 @@ void Widget::on_pushButton_clicked()
         ui->textBrowser->append(" 0 devices found");
     }
 
+}
+int Widget::CloseFtdi(){
+    int status;
+    FT_HANDLE ftHandle;
+    FT_STATUS ftStatus;
+    ftStatus = FT_Open(0,&ftHandle);
+    if (ftStatus == FT_OK)
+    {  // FT_Open OK, use ftHandle to access device
+        // when finished, call FT_Close
+        FT_Close(ftHandle);
+        ui->textBrowser->append(" FT232 close");
+    }
+        else {  // FT_Open failed
+        status = ftStatus;
+        ui->textBrowser->append(" Error");
+    }
+
+
+    return status;
+}
+int Widget::OpenFtdi(){
+    int status;
+
+    return status;
+}
+int Widget::ResetFtdi(){
+    int status;
+
+    return status;
+}
+
+
+
+void Widget::on_pushButton_3_clicked()
+{
+    ui->textBrowser->clear();
 }
