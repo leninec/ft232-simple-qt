@@ -14,6 +14,7 @@ class FTDI
 {
 public:
     FTDI();
+    ~FTDI();
     QVector<QString> searthDevice(int i =0);
     unsigned long getQuntatiDevice();
 

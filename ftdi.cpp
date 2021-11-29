@@ -5,6 +5,11 @@ FTDI::FTDI()
 
 
 }
+FTDI::~FTDI()
+{
+
+}
+
 QVector<QString> FTDI::searthDevice(int i)
 {
     QVector<QString> deviceList;

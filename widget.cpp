@@ -25,11 +25,8 @@ Widget::~Widget()
 void Widget::on_pushButton_clicked()
 {
     QVector<QString> Devices;
-    qDebug() << "Start function";
+    ui->textBrowser->clear();
     int n =  myFtdi.getQuntatiDevice();
-   // int n = 1;
-    qDebug() << "after ftdi function";
-    qDebug() << n;
     if (n == 1)
     {
         Devices = myFtdi.searthDevice();
