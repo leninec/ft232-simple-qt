@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include "ftdi.h"
 
 namespace Ui {
 class Widget;
@@ -27,6 +28,8 @@ private slots:
 
 private:
     Ui::Widget *ui;
+    FTDI myFtdi;
+
 };
 
 #endif // WIDGET_H

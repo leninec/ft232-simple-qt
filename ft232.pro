@@ -13,10 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp
+        widget.cpp \
+    ftdi.cpp
 
 HEADERS  += widget.h \
-    ftd2xx.h
+    ftd2xx.h \
+    ftdi.h
+
 
 
 FORMS    += widget.ui
