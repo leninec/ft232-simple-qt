@@ -24,11 +24,13 @@ HEADERS  += widget.h \
 
 FORMS    += widget.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ -lftd2xx
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ -lftd2xxd
+RC_FILE = myappico.rc
+
+
+
+win32: LIBS += -L$$PWD/ -lftd2xx
 
 INCLUDEPATH += $$PWD/
 DEPENDPATH += $$PWD/
 
-win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/ftd2xx.lib
-else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/ftd2xxd.lib
+win32: PRE_TARGETDEPS += $$PWD/ftd2xx.lib
