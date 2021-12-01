@@ -1,6 +1,8 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include <QDebug>
+#include <QPainter>
+
 
 
 #include <Windows.h> // comes first
@@ -13,7 +15,21 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+   // this->setFixedSize(QSize(483, 564));
+
+    connect(ui->findButton, SIGNAL(clicked()), this, SLOT(find_Ftdi()));
+    connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clearTextB()));
+
+
+    QPainter painter1; //создание рисовальщика
+    painter1.begin(this); //захват контекста
+    painter1.fillRect(0,0,width(),height(),Qt::CrossPattern); //отрисовка
+    painter1.end();//освобождение контекста
+
+
     FTDI myFtdi;
+    setWindowTitle(tr("FT232 test program"));
+    ui->textBrowser->append("Start");
 
 }
 
@@ -22,9 +38,9 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::on_pushButton_clicked()
+void Widget::find_Ftdi()
 {
-
+    qDebug()<<"open func in widget";
     QVector<QString> Devices;
     ui->textBrowser->clear();
     int n =  this->myFtdi.getQuntatiDevice();
@@ -46,37 +62,12 @@ void Widget::on_pushButton_clicked()
         ui->textBrowser->append(" Can not find any device");
     }
 }
-int Widget::CloseFtdi(){
-    int status;
-    FT_HANDLE ftHandle;
-    FT_STATUS ftStatus;
-    ftStatus = FT_Open(0,&ftHandle);
-    if (ftStatus == FT_OK)
-    {  // FT_Open OK, use ftHandle to access device
-        // when finished, call FT_Close
-        FT_Close(ftHandle);
-        ui->textBrowser->append(" FT232 close");
-    }
-        else {  // FT_Open failed
-        status = ftStatus;
-        ui->textBrowser->append(" Error");
-    }
-    return status;
-}
-int Widget::OpenFtdi(){
-    int status;
-
-    return status;
-}
-int Widget::ResetFtdi(){
-    int status;
-
-    return status;
-}
 
 
 
-void Widget::on_pushButton_3_clicked()
+
+void Widget::clearTextB()
 {
     ui->textBrowser->clear();
+     qDebug()<<"clear";
 }

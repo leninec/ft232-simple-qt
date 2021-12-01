@@ -19,8 +19,10 @@ public:
     ~FTDI();
     QVector<QString> searthDevice();
     unsigned long getQuntatiDevice();
+    int OpenFtdi(int iDev = 0);
+    int CloseFtdi(int i);
     int CloseFtdi();
-
+    int getQuntatiOpenDevice();
 
 private:
     //FT_STATUS ftStatus;

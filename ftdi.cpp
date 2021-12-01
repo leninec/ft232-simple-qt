@@ -63,12 +63,37 @@ unsigned long FTDI::getQuntatiDevice()
         return -1;
     }
 }
+int FTDI::getQuntatiOpenDevice()
+{
+   int n = mpFtDev.size();
+   return n;
 
-int FTDI::CloseFtdi(){
+}
+int FTDI::OpenFtdi(int iDev){
     int status;
     FT_HANDLE ftHandle;
     FT_STATUS ftStatus;
-    ftStatus = FT_Open(0,&ftHandle);
+    ftStatus = FT_Open(iDev,&ftHandle);
+    if (ftStatus == FT_OK)
+    {  // FT_Open OK, use ftHandle to access device
+        // when finished, call FT_Close
+
+        qDebug()<<" FT232 open";
+        mpFtDev[iDev] = ftHandle;
+    }
+        else {  // FT_Open failed
+        status = ftStatus;
+        qDebug()<<" Error closing";
+    }
+    return status;
+}
+
+int FTDI::CloseFtdi(int iDev){
+    int status;
+    FT_HANDLE ftHandle;
+    FT_STATUS ftStatus;
+
+    ftStatus = FT_Open(iDev,&ftHandle);
     if (ftStatus == FT_OK)
     {  // FT_Open OK, use ftHandle to access device
         // when finished, call FT_Close
@@ -78,6 +103,26 @@ int FTDI::CloseFtdi(){
         else {  // FT_Open failed
         status = ftStatus;
         qDebug()<<" Error closing";
+    }
+    return status;
+}
+int FTDI::CloseFtdi(){
+    int status;
+    FT_HANDLE ftHandle;
+    FT_STATUS ftStatus;
+
+    for (int n =0; n<mpFtDev.size(); n++)
+    {
+
+
+      ftStatus =  FT_Close(mpFtDev[n]);
+      if(ftStatus == FT_OK){
+       qDebug()<<" FT232 close";
+      }
+        else {  // FT_Open failed
+
+        qDebug()<<" Error closing";
+       }
     }
     return status;
 }

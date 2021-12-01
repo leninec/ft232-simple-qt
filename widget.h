@@ -18,13 +18,8 @@ public:
 
     
 private slots:
-    void on_pushButton_clicked();
-    int OpenFtdi();
-    int CloseFtdi();
-    int ResetFtdi();
-
-
-    void on_pushButton_3_clicked();
+    void find_Ftdi();
+    void clearTextB();
 
 private:
     Ui::Widget *ui;
