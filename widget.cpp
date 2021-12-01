@@ -24,12 +24,13 @@ Widget::~Widget()
 
 void Widget::on_pushButton_clicked()
 {
+
     QVector<QString> Devices;
     ui->textBrowser->clear();
-    int n =  myFtdi.getQuntatiDevice();
+    int n =  this->myFtdi.getQuntatiDevice();
     if (n == 1)
     {
-        Devices = myFtdi.searthDevice();
+        Devices = this->myFtdi.searthDevice();
         for (int i=0; i<Devices.size(); i++)
         {
         ui->textBrowser->append(Devices[i]);
@@ -60,8 +61,6 @@ int Widget::CloseFtdi(){
         status = ftStatus;
         ui->textBrowser->append(" Error");
     }
-
-
     return status;
 }
 int Widget::OpenFtdi(){

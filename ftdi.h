@@ -7,21 +7,26 @@
 #include <QStringList>
 #include <QDebug>
 #include <QVector>
+#include <QMap>
 
 
 
 class FTDI
 {
+
 public:
     FTDI();
     ~FTDI();
-    QVector<QString> searthDevice(int i =0);
+    QVector<QString> searthDevice();
     unsigned long getQuntatiDevice();
+    int CloseFtdi();
 
 
 private:
     //FT_STATUS ftStatus;
     //DWORD numDevs;
+    QMap <int, FT_HANDLE > mpFtDev;
+
 
 
 };

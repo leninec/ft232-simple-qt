@@ -2,46 +2,51 @@
 
 FTDI::FTDI()
 {
-
+    qDebug()<<"Constructor start";
 
 }
 FTDI::~FTDI()
 {
-
+    qDebug()<<"Destructor start";
 }
 
-QVector<QString> FTDI::searthDevice(int i)
+QVector<QString> FTDI::searthDevice()
 {
-    QVector<QString> deviceList;
+    QVector<QString> deviceInfo;
     FT_STATUS ftStatus;
     unsigned long numDevs;
+    FT_HANDLE ftHandle;
     // create the device information list
     ftStatus = FT_CreateDeviceInfoList(&numDevs);
     FT_DEVICE_LIST_INFO_NODE *devInfo;
     QString num,flag,id,tmp2,tmp3;
 
-    if (numDevs >= i)
+    if (numDevs > 0)
     {
        devInfo = (FT_DEVICE_LIST_INFO_NODE*)malloc(sizeof(FT_DEVICE_LIST_INFO_NODE)*numDevs);
        ftStatus = FT_GetDeviceInfoList(devInfo,&numDevs);
        if (ftStatus == FT_OK)
        {
-                deviceList.append( "Dev N : " + num.setNum(i));
-                deviceList.append("Flags= " + flag.setNum(devInfo[i].Flags));
-                deviceList.append("Type= " + id.setNum(devInfo[i].Type));
-                deviceList.append("ID= " + flag.setNum(devInfo[i].ID));
-                deviceList.append("LocId= " + flag.setNum(devInfo[i].LocId));
-                deviceList.append("SerialNumber= " + QString::fromAscii((devInfo[i].SerialNumber)));
-                deviceList.append(("Description= " + QString::fromAscii(((devInfo[i].Description)))));
+        for (int i = 0; i < numDevs; i++)
+         {
 
-       }
+                deviceInfo.append( "Dev N : " + num.setNum(i));
+                deviceInfo.append("Flags= " + flag.setNum(devInfo[i].Flags));
+                deviceInfo.append("Type= " + id.setNum(devInfo[i].Type));
+                deviceInfo.append("ID= " + flag.setNum(devInfo[i].ID));
+                deviceInfo.append("LocId= " + flag.setNum(devInfo[i].LocId));
+                deviceInfo.append("SerialNumber= " + QString::fromAscii((devInfo[i].SerialNumber)));
+                deviceInfo.append(("Description= " + QString::fromAscii(((devInfo[i].Description)))));
+                mpFtDev.insert(i,  ftHandle);
+          }
+         }
     }
 
     else{
-        deviceList.append( "0 devices found ") ;
+        deviceInfo.append( "0 devices found ") ;
 
     }
-    return deviceList;
+    return deviceInfo;
 }
 unsigned long FTDI::getQuntatiDevice()
 {
@@ -57,5 +62,23 @@ unsigned long FTDI::getQuntatiDevice()
     else {
         return -1;
     }
+}
+
+int FTDI::CloseFtdi(){
+    int status;
+    FT_HANDLE ftHandle;
+    FT_STATUS ftStatus;
+    ftStatus = FT_Open(0,&ftHandle);
+    if (ftStatus == FT_OK)
+    {  // FT_Open OK, use ftHandle to access device
+        // when finished, call FT_Close
+        FT_Close(ftHandle);
+        qDebug()<<" FT232 close";
+    }
+        else {  // FT_Open failed
+        status = ftStatus;
+        qDebug()<<" Error closing";
+    }
+    return status;
 }
 
