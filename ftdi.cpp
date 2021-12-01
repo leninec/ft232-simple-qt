@@ -80,11 +80,26 @@ int FTDI::OpenFtdi(int iDev){
 
         qDebug()<<" FT232 open";
         mpFtDev[iDev] = ftHandle;
+        FT_SetBitMode(ftHandle, 0xff, 0x04); // all to write sync mode
+        ftStatus = FT_SetDataCharacteristics(ftHandle, FT_BITS_8, FT_STOP_BITS_1, FT_PARITY_NONE);
+        if (ftStatus == FT_OK) {   // FT_SetDataCharacteristics OK
+        }  else {
+             qDebug()<<" error setup";
+
+        }
+        ftStatus = FT_SetTimeouts(ftHandle, 5000, 1000);
+        if (ftStatus == FT_OK) {  // FT_SetTimeouts OK
+        }
+            else {  // FT_SetTimeouts failed
+            }
+        ftStatus = FT_SetBaudRate(ftHandle, 9600);
+
     }
         else {  // FT_Open failed
-        status = ftStatus;
+
         qDebug()<<" Error closing";
     }
+    status = ftStatus;
     return status;
 }
 
