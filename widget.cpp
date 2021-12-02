@@ -31,6 +31,7 @@ Widget::Widget(QWidget *parent) :
     setWindowTitle(tr("FT232 test program"));
     ui->textBrowser->append("Start");
     ui->openButton->hide();
+    ui->closeButton->hide();
 
 }
 
@@ -50,8 +51,8 @@ void Widget::find_Ftdi()
         Devices = this->myFtdi.searthDevice();
         for (int i=0; i<Devices.size(); i++)
         {
-        ui->textBrowser->append(Devices[i]);
-        ui->openButton->show();
+            ui->textBrowser->append(Devices[i]);
+            ui->openButton->show();
         }
     }
     if (n >1){
@@ -67,7 +68,6 @@ void Widget::find_Ftdi()
 }
 void Widget::openFtdi()
 {
-    QVector<QString> Devices;
     QString sEr;
 
     int er = myFtdi.OpenFtdi();
@@ -79,8 +79,19 @@ void Widget::openFtdi()
         ui->textBrowser->append("Error !!! "+ readError(er));
     }
 }
+void Widget::closeFtdi()
+{
+    QString sEr;
 
+    int er = myFtdi.CloseFtdi();
 
+    if (er == 0){
+        ui->textBrowser->append(" device open!!!");
+    }
+    else {
+        ui->textBrowser->append("Error !!! "+ readError(er));
+    }
+}
 
 
 void Widget::clearTextB()

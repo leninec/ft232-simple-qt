@@ -3,11 +3,17 @@
 FTDI::FTDI()
 {
     qDebug()<<"Constructor start";
+    iDev = -1; // no device
 
 }
 FTDI::~FTDI()
 {
     qDebug()<<"Destructor start";
+    if (iDev != -1)
+    {
+        CloseFtdi(iDev);
+        qDebug()<<"Destructor ftdi close";
+    }
 }
 
 QVector<QString> FTDI::searthDevice()
@@ -30,14 +36,14 @@ QVector<QString> FTDI::searthDevice()
         for (int i = 0; i < numDevs; i++)
          {
 
-                deviceInfo.append( "Dev N : " + num.setNum(i));
-                deviceInfo.append("Flags= " + flag.setNum(devInfo[i].Flags));
-                deviceInfo.append("Type= " + id.setNum(devInfo[i].Type));
-                deviceInfo.append("ID= " + flag.setNum(devInfo[i].ID));
-                deviceInfo.append("LocId= " + flag.setNum(devInfo[i].LocId));
-                deviceInfo.append("SerialNumber= " + QString::fromAscii((devInfo[i].SerialNumber)));
-                deviceInfo.append(("Description= " + QString::fromAscii(((devInfo[i].Description)))));
-                mpFtDev.insert(i,  ftHandle);
+            deviceInfo.append( "Dev________N:" + num.setNum(i).rightJustified(50,' '));
+            deviceInfo.append( "Flags.......=" + flag.setNum(devInfo[i].Flags).rightJustified(50,' '));
+            deviceInfo.append( "Type........=" + id.setNum(devInfo[i].Type).rightJustified(50,' '));
+            deviceInfo.append( "ID          =" + flag.setNum(devInfo[i].ID).rightJustified(50,' '));
+            deviceInfo.append( "LocId       =" + flag.setNum(devInfo[i].LocId).rightJustified(50,' '));
+            deviceInfo.append( "SerialNumber=" + QString::fromAscii((devInfo[i].SerialNumber)).rightJustified(50,' '));
+            deviceInfo.append(("Description.=" + QString::fromAscii(((devInfo[i].Description))).rightJustified(50,' ')));
+            iDev = i;
           }
          }
     }
@@ -63,15 +69,16 @@ unsigned long FTDI::getQuntatiDevice()
         return -1;
     }
 }
-int FTDI::getQuntatiOpenDevice()
+/*int FTDI::getQuntatiOpenDevice()
 {
    int n = mpFtDev.size();
    return n;
 
 }
+*/
 int FTDI::OpenFtdi(int iDev){
     int status;
-    FT_HANDLE ftHandle;
+   // FT_HANDLE ftHandle;
     FT_STATUS ftStatus;
     ftStatus = FT_Open(iDev,&ftHandle);
     if (ftStatus == FT_OK)
@@ -79,7 +86,6 @@ int FTDI::OpenFtdi(int iDev){
         // when finished, call FT_Close
 
         qDebug()<<" FT232 open";
-        mpFtDev[iDev] = ftHandle;
         FT_SetBitMode(ftHandle, 0xff, 0x04); // all to write sync mode
         ftStatus = FT_SetDataCharacteristics(ftHandle, FT_BITS_8, FT_STOP_BITS_1, FT_PARITY_NONE);
         if (ftStatus == FT_OK) {   // FT_SetDataCharacteristics OK
@@ -103,9 +109,9 @@ int FTDI::OpenFtdi(int iDev){
     return status;
 }
 
-int FTDI::CloseFtdi(int iDev){
+int FTDI::CloseFtdi(int iDev)
+{
     int status;
-    FT_HANDLE ftHandle;
     FT_STATUS ftStatus;
 
     ftStatus = FT_Open(iDev,&ftHandle);
@@ -121,24 +127,42 @@ int FTDI::CloseFtdi(int iDev){
     }
     return status;
 }
-int FTDI::CloseFtdi(){
-    int status;
-    FT_HANDLE ftHandle;
-    FT_STATUS ftStatus;
+ int FTDI::SendData(int iDev, char TxBuffer[256], DWORD BytesWritten )
+ {
+     int status;
+     FT_STATUS ftStatus;
+     ftStatus = FT_Open(iDev, &ftHandle);
+     if(ftStatus != FT_OK)
+     {
+         // FT_Open failed
+         status = ftStatus;
+         return status;
+     }
+     ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
 
-    for (int n =0; n<mpFtDev.size(); n++)
-    {
+     status = ftStatus;
 
+     return status;
+ }
+ int FTDI::CheckOut(UCHAR &BitMode)
+ {
+     int status;
+     FT_STATUS ftStatus;
+     ftStatus = FT_Open(iDev, &ftHandle);
+     if(ftStatus != FT_OK)
+     {
+         // FT_Open failed
+         status = ftStatus;
+         return status;
+     }
+     ftStatus = FT_GetBitMode(ftHandle, &BitMode);
+     if (ftStatus == FT_OK)
+     {  // BitMode contains current value
+     } else {
+         // FT_GetBitMode FAILED!
+     }
+     status = ftStatus;
+     return status;
+ }
 
-      ftStatus =  FT_Close(mpFtDev[n]);
-      if(ftStatus == FT_OK){
-       qDebug()<<" FT232 close";
-      }
-        else {  // FT_Open failed
-
-        qDebug()<<" Error closing";
-       }
-    }
-    return status;
-}
 

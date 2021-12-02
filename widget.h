@@ -23,6 +23,7 @@ private slots:
     void find_Ftdi();
     void clearTextB();
     void openFtdi();
+    void closeFtdi();
 
 private:
     Ui::Widget *ui;

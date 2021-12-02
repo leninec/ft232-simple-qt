@@ -18,7 +18,7 @@
     <rect>
      <x>0</x>
      <y>320</y>
-     <width>256</width>
+     <width>311</width>
      <height>192</height>
     </rect>
    </property>
@@ -26,7 +26,7 @@
   <widget class="QPushButton" name="findButton">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>320</x>
      <y>320</y>
      <width>131</width>
      <height>23</height>
@@ -39,7 +39,7 @@
   <widget class="QPushButton" name="openButton">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>320</x>
      <y>350</y>
      <width>131</width>
      <height>23</height>
@@ -52,7 +52,7 @@
   <widget class="QPushButton" name="clearButton">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>320</x>
      <y>490</y>
      <width>131</width>
      <height>23</height>
@@ -60,6 +60,19 @@
    </property>
    <property name="text">
     <string>Очистить дисплей</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="closeButton">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>380</y>
+     <width>131</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Закрыть</string>
    </property>
   </widget>
  </widget>
