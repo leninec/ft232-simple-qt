@@ -10,7 +10,9 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-   // this->setFixedSize(QSize(483, 564));
+    this->setFixedSize(QSize(483, 423));
+    iDev= 0;
+
 
     connect(ui->findButton, SIGNAL(clicked()), this, SLOT(find_Ftdi()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clearTextB()));
@@ -19,11 +21,11 @@ Widget::Widget(QWidget *parent) :
     connect(ui->SETlButton, SIGNAL(clicked()), this, SLOT(SetAllLo()));
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeFtdi()));
 
-    QPainter painter1; //создание рисовальщика
+ /*   QPainter painter1; //создание рисовальщика
     painter1.begin(this); //захват контекста
     painter1.fillRect(0,0,width(),height(),Qt::CrossPattern); //отрисовка
     painter1.end();//освобождение контекста
-
+*/
    // FTDI myFtdi;
     setWindowTitle(tr("FT232 test program"));
     ui->textBrowser->append("Start");
@@ -53,6 +55,8 @@ void Widget::find_Ftdi()
             ui->textBrowser->append(Devices[i]);
             ui->openButton->show();
         }
+        description  = Devices[6];
+        SerialNumber = Devices[5];
     }
     if (n >1){
         ui->textBrowser->append("You have more than 1 FTDI device!!!");
@@ -76,6 +80,8 @@ void Widget::openFtdi()
         ui->SEThButton->show();
         ui->SETlButton->show();
         ui->closeButton->show();
+        iDev=1;
+        repaint();
     }
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
@@ -89,12 +95,13 @@ void Widget::closeFtdi()
 
     if (er == 0){
         ui->textBrowser->append(" device close!!!");
+        iDev=1;
+        repaint();
     }
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
     }
 }
-
 
 void Widget::clearTextB()
 {
@@ -102,6 +109,7 @@ void Widget::clearTextB()
 }
 
 void Widget::paintEvent(QPaintEvent *event) {
+    if (iDev){
     QPainter painter(this); //новый объект "рисовальщика"
     painter.setPen (QPen(Qt::red,Qt::SolidLine));
     //создать и установить перо - красная сплошная линия
@@ -117,7 +125,16 @@ void Widget::paintEvent(QPaintEvent *event) {
   //установить шрифт заданного начертания и размера 10 пт
     QRect rect(50,70,241,100);
     painter.drawRect(rect);
-    painter.drawText(rect, Qt::AlignCenter, tr("Hello,\nworld!"));
+    QString tmp = description + "\n " + SerialNumber;
+    painter.drawText(rect, Qt::AlignCenter, tmp);
+
+    QPen pen;  // перо по умолчанию
+    pen.setWidth(8); // толщина пера
+    pen.setBrush(Qt::red); // цвет пера
+    painter.setPen(pen);
+
+    painter.drawPoint(QPoint(270, 90));
+ }
   //вывели строку текста, выравненную по центру
 }
 void Widget::SetAllHi()

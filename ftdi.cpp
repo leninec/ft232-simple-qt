@@ -36,13 +36,22 @@ QVector<QString> FTDI::searthDevice()
        {
         for (int i = 0; i < numDevs; i++)
          {
-            deviceInfo.append( "Dev________N:" + num.setNum(i).rightJustified(50,' '));
+        /*    deviceInfo.append( "Dev________N:" + num.setNum(i).rightJustified(50,' '));
             deviceInfo.append( "Flags.......=" + flag.setNum(devInfo[i].Flags).rightJustified(50,' '));
             deviceInfo.append( "Type........=" + id.setNum(devInfo[i].Type).rightJustified(50,' '));
             deviceInfo.append( "ID          =" + flag.setNum(devInfo[i].ID).rightJustified(50,' '));
             deviceInfo.append( "LocId       =" + flag.setNum(devInfo[i].LocId).rightJustified(50,' '));
             deviceInfo.append( "SerialNumber=" + QString::fromAscii((devInfo[i].SerialNumber)).rightJustified(50,' '));
             deviceInfo.append(("Description.=" + QString::fromAscii(((devInfo[i].Description))).rightJustified(50,' ')));
+*/
+deviceInfo.append( num.setNum(i));
+            deviceInfo.append(  flag.setNum(devInfo[i].Flags));
+            deviceInfo.append(  id.setNum(devInfo[i].Type));
+            deviceInfo.append(  flag.setNum(devInfo[i].ID));
+            deviceInfo.append(  flag.setNum(devInfo[i].LocId));
+            deviceInfo.append(  QString::fromAscii((devInfo[i].SerialNumber)));
+            deviceInfo.append( QString::fromAscii(((devInfo[i].Description))));
+
             iDev = i;
           }
          }

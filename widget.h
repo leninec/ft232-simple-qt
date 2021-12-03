@@ -31,8 +31,10 @@ private:
     Ui::Widget *ui;
     FTDI myFtdi;
     QString readError(int);
-
-
+    int iDev;
+    QString description;
+    QString SerialNumber;
+protected:
     void paintEvent(QPaintEvent *);
 
 };
