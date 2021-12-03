@@ -21,7 +21,7 @@ public:
     unsigned long getQuntatiDevice();
     int OpenFtdi(int iDev = 0);
     int CloseFtdi(int i = 0);
-    int SendData(int iDev, char TxBuffer[256], DWORD BytesWritten );
+    int SendData(int iDev, char TxBuffer[256] );
     int CheckOut(UCHAR &BitMode);
    // int getQuntatiOpenDevice();
 

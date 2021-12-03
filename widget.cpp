@@ -20,6 +20,8 @@ Widget::Widget(QWidget *parent) :
     connect(ui->findButton, SIGNAL(clicked()), this, SLOT(find_Ftdi()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clearTextB()));
     connect(ui->openButton, SIGNAL(clicked()), this, SLOT(openFtdi()));
+    connect(ui->SEThButton, SIGNAL(clicked()), this, SLOT(SetAllHi()));
+    connect(ui->SETlButton, SIGNAL(clicked()), this, SLOT(SetAllLo()));
 
 
     QPainter painter1; //создание рисовальщика
@@ -32,6 +34,8 @@ Widget::Widget(QWidget *parent) :
     ui->textBrowser->append("Start");
     ui->openButton->hide();
     ui->closeButton->hide();
+    ui->SEThButton->hide();
+    ui->SETlButton->hide();
 
 }
 
@@ -74,6 +78,9 @@ void Widget::openFtdi()
 
     if (er == 0){
         ui->textBrowser->append(" device open!!!");
+        ui->SEThButton->show();
+        ui->SETlButton->show();
+        ui->closeButton->show();
     }
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
@@ -82,7 +89,7 @@ void Widget::openFtdi()
 void Widget::closeFtdi()
 {
     QString sEr;
-
+    qDebug()<<"widget close";
     int er = myFtdi.CloseFtdi();
 
     if (er == 0){
@@ -118,6 +125,34 @@ void Widget::paintEvent(QPaintEvent *event) {
     painter.drawRect(rect);
     painter.drawText(rect, Qt::AlignCenter, tr("Hello,\nworld!"));
   //вывели строку текста, выравненную по центру
+}
+void Widget::SetAllHi()
+{
+    qDebug()<<"widget hi";
+    char data[8] = {0xff};
+    int er = myFtdi.SendData(0, data);
+
+    if (er == 0){
+        ui->textBrowser->append(" data send!!!");
+    }
+    else {
+        ui->textBrowser->append("Error !!! "+ readError(er));
+    }
+
+}
+
+void Widget::SetAllLo()
+{
+     qDebug()<<"widget lo";
+     char data[8] = {0x00};
+     int er = myFtdi.SendData(0, data);
+
+     if (er == 0){
+         ui->textBrowser->append(" data send!!!");
+     }
+     else {
+         ui->textBrowser->append("Error !!! "+ readError(er));
+     }
 }
 
 QString Widget::readError(int error){

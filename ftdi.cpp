@@ -111,6 +111,7 @@ int FTDI::OpenFtdi(int iDev){
 
 int FTDI::CloseFtdi(int iDev)
 {
+    qDebug()<<"myftdi  FT232 closing";
     int status;
     FT_STATUS ftStatus;
 
@@ -127,10 +128,11 @@ int FTDI::CloseFtdi(int iDev)
     }
     return status;
 }
- int FTDI::SendData(int iDev, char TxBuffer[256], DWORD BytesWritten )
+ int FTDI::SendData(int iDev, char TxBuffer[256] )
  {
      int status;
      FT_STATUS ftStatus;
+     DWORD BytesWritten;
      ftStatus = FT_Open(iDev, &ftHandle);
      if(ftStatus != FT_OK)
      {
@@ -139,7 +141,7 @@ int FTDI::CloseFtdi(int iDev)
          return status;
      }
      ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
-
+//  check size TxBuffer and Byte written
      status = ftStatus;
 
      return status;

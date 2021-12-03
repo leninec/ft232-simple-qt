@@ -24,11 +24,14 @@ private slots:
     void clearTextB();
     void openFtdi();
     void closeFtdi();
+    void SetAllHi();
+    void SetAllLo();
 
 private:
     Ui::Widget *ui;
     FTDI myFtdi;
     QString readError(int);
+
 protected:
     void paintEvent(QPaintEvent *);
 
