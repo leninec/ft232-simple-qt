@@ -9,8 +9,6 @@
 #include <QVector>
 #include <QMap>
 
-
-
 class FTDI
 {
 
@@ -21,7 +19,7 @@ public:
     unsigned long getQuntatiDevice();
     int OpenFtdi(int iDev = 0);
     int CloseFtdi(int i = 0);
-    int SendData(int iDev, char TxBuffer[256] );
+    int SendData(int iDev, char TxBuffer, int size );
     int CheckOut(UCHAR &BitMode);
    // int getQuntatiOpenDevice();
 

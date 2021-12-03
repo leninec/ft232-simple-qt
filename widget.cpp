@@ -2,13 +2,8 @@
 #include "ui_widget.h"
 #include <QDebug>
 
-
-
-
 #include <Windows.h> // comes first
 #include "ftd2xx.h" // comes *after* Windows.h+
-
-
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -22,14 +17,14 @@ Widget::Widget(QWidget *parent) :
     connect(ui->openButton, SIGNAL(clicked()), this, SLOT(openFtdi()));
     connect(ui->SEThButton, SIGNAL(clicked()), this, SLOT(SetAllHi()));
     connect(ui->SETlButton, SIGNAL(clicked()), this, SLOT(SetAllLo()));
-
+    connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeFtdi()));
 
     QPainter painter1; //создание рисовальщика
     painter1.begin(this); //захват контекста
     painter1.fillRect(0,0,width(),height(),Qt::CrossPattern); //отрисовка
     painter1.end();//освобождение контекста
 
-    FTDI myFtdi;
+   // FTDI myFtdi;
     setWindowTitle(tr("FT232 test program"));
     ui->textBrowser->append("Start");
     ui->openButton->hide();
@@ -93,7 +88,7 @@ void Widget::closeFtdi()
     int er = myFtdi.CloseFtdi();
 
     if (er == 0){
-        ui->textBrowser->append(" device open!!!");
+        ui->textBrowser->append(" device close!!!");
     }
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
@@ -104,7 +99,6 @@ void Widget::closeFtdi()
 void Widget::clearTextB()
 {
     ui->textBrowser->clear();
-     qDebug()<<"clear";
 }
 
 void Widget::paintEvent(QPaintEvent *event) {
@@ -128,9 +122,10 @@ void Widget::paintEvent(QPaintEvent *event) {
 }
 void Widget::SetAllHi()
 {
+    UCHAR BitMode;
     qDebug()<<"widget hi";
     char data[8] = {0xff};
-    int er = myFtdi.SendData(0, data);
+    int er = myFtdi.SendData(0, data[0], 8);
 
     if (er == 0){
         ui->textBrowser->append(" data send!!!");
@@ -138,14 +133,17 @@ void Widget::SetAllHi()
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
     }
+  //  er = myFtdi.CheckOut(BitMode);
+  //  ui->textBrowser->append("- "+ readError(er));
 
 }
 
 void Widget::SetAllLo()
 {
+     UCHAR BitMode;
      qDebug()<<"widget lo";
      char data[8] = {0x00};
-     int er = myFtdi.SendData(0, data);
+     int er = myFtdi.SendData(0, data[0], 8);
 
      if (er == 0){
          ui->textBrowser->append(" data send!!!");
@@ -153,6 +151,8 @@ void Widget::SetAllLo()
      else {
          ui->textBrowser->append("Error !!! "+ readError(er));
      }
+    // er = myFtdi.CheckOut(BitMode);
+    // ui->textBrowser->append("- "+ readError(er));
 }
 
 QString Widget::readError(int error){
@@ -215,6 +215,8 @@ QString Widget::readError(int error){
     case 18:
         str = "DEVICE LIST NOT READY";
         break;
+    default:
+        str = "UNKNOWN";
 
     }
     return str;

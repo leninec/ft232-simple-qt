@@ -32,7 +32,7 @@ private:
     FTDI myFtdi;
     QString readError(int);
 
-protected:
+
     void paintEvent(QPaintEvent *);
 
 };

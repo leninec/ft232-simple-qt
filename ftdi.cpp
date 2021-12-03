@@ -4,12 +4,13 @@ FTDI::FTDI()
 {
     qDebug()<<"Constructor start";
     iDev = -1; // no device
+    ftHandle = 0;
 
 }
 FTDI::~FTDI()
 {
     qDebug()<<"Destructor start";
-    if (iDev != -1)
+    if (ftHandle != 0)
     {
         CloseFtdi(iDev);
         qDebug()<<"Destructor ftdi close";
@@ -35,7 +36,6 @@ QVector<QString> FTDI::searthDevice()
        {
         for (int i = 0; i < numDevs; i++)
          {
-
             deviceInfo.append( "Dev________N:" + num.setNum(i).rightJustified(50,' '));
             deviceInfo.append( "Flags.......=" + flag.setNum(devInfo[i].Flags).rightJustified(50,' '));
             deviceInfo.append( "Type........=" + id.setNum(devInfo[i].Type).rightJustified(50,' '));
@@ -50,7 +50,6 @@ QVector<QString> FTDI::searthDevice()
 
     else{
         deviceInfo.append( "0 devices found ") ;
-
     }
     return deviceInfo;
 }
@@ -85,26 +84,29 @@ int FTDI::OpenFtdi(int iDev){
     {  // FT_Open OK, use ftHandle to access device
         // when finished, call FT_Close
 
-        qDebug()<<" FT232 open";
-        FT_SetBitMode(ftHandle, 0xff, 0x04); // all to write sync mode
-        ftStatus = FT_SetDataCharacteristics(ftHandle, FT_BITS_8, FT_STOP_BITS_1, FT_PARITY_NONE);
-        if (ftStatus == FT_OK) {   // FT_SetDataCharacteristics OK
-        }  else {
-             qDebug()<<" error setup";
+        qDebug()<<"my ftdi FT232 open";
+        ftStatus = FT_SetBitMode(ftHandle, 0xff, 0x04); // all to write sync mode
+        if(ftStatus != FT_OK)
+        {// FT_Open failed
+            qDebug()<<" Error SETUP BITMODE";
+            status = ftStatus;
+            return status;
+        }
 
+        ftStatus = FT_SetDataCharacteristics(ftHandle, FT_BITS_8, FT_STOP_BITS_1, FT_PARITY_NONE);
+        if (ftStatus != FT_OK) {   // FT_SetDataCharacteristics OK
+            qDebug()<<" error setup";
         }
         ftStatus = FT_SetTimeouts(ftHandle, 5000, 1000);
-        if (ftStatus == FT_OK) {  // FT_SetTimeouts OK
+        if (ftStatus != FT_OK) {  // FT_SetTimeouts OK
+         qDebug()<<" error timeout";
         }
-            else {  // FT_SetTimeouts failed
-            }
+
         ftStatus = FT_SetBaudRate(ftHandle, 9600);
-
-    }
-        else {  // FT_Open failed
-
-        qDebug()<<" Error closing";
-    }
+        if (ftStatus != FT_OK) {  // FT_SetTimeouts OK
+         qDebug()<<" error BAUDRATE";
+        }
+    }     
     status = ftStatus;
     return status;
 }
@@ -115,12 +117,13 @@ int FTDI::CloseFtdi(int iDev)
     int status;
     FT_STATUS ftStatus;
 
-    ftStatus = FT_Open(iDev,&ftHandle);
+    ftStatus =  FT_Close(ftHandle);
     if (ftStatus == FT_OK)
     {  // FT_Open OK, use ftHandle to access device
         // when finished, call FT_Close
-        FT_Close(ftHandle);
         qDebug()<<" FT232 close";
+        iDev = -1; // no device
+        ftHandle = 0;
     }
         else {  // FT_Open failed
         status = ftStatus;
@@ -128,19 +131,18 @@ int FTDI::CloseFtdi(int iDev)
     }
     return status;
 }
- int FTDI::SendData(int iDev, char TxBuffer[256] )
+ int FTDI::SendData(int iDev, char TxBuffer, int size )
  {
      int status;
      FT_STATUS ftStatus;
      DWORD BytesWritten;
-     ftStatus = FT_Open(iDev, &ftHandle);
+     ftStatus = FT_Write(ftHandle, &TxBuffer, sizeof(TxBuffer), &BytesWritten);
      if(ftStatus != FT_OK)
      {
          // FT_Open failed
-         status = ftStatus;
-         return status;
+         qDebug()<<" Error sending";
      }
-     ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
+
 //  check size TxBuffer and Byte written
      status = ftStatus;
 
@@ -150,16 +152,11 @@ int FTDI::CloseFtdi(int iDev)
  {
      int status;
      FT_STATUS ftStatus;
-     ftStatus = FT_Open(iDev, &ftHandle);
-     if(ftStatus != FT_OK)
-     {
-         // FT_Open failed
-         status = ftStatus;
-         return status;
-     }
      ftStatus = FT_GetBitMode(ftHandle, &BitMode);
      if (ftStatus == FT_OK)
      {  // BitMode contains current value
+          qDebug()<<" bIT STATE";
+          qDebug()<<BitMode;
      } else {
          // FT_GetBitMode FAILED!
      }
