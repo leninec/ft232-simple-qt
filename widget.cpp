@@ -10,8 +10,8 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    this->setFixedSize(QSize(483, 423));
-    iDev= 0;
+  //  this->setFixedSize(QSize(483, 423));
+    iDev= CLOSE;
 
 
     connect(ui->findButton, SIGNAL(clicked()), this, SLOT(find_Ftdi()));
@@ -74,7 +74,7 @@ void Widget::find_Ftdi()
             ui->SEThButton->show();
             ui->SETlButton->show();
             ui->closeButton->show();
-            iDev=1;
+            iDev=OPEN;
             repaint();
         }
         else {
@@ -101,7 +101,7 @@ void Widget::closeFtdi()
 
     if (er == 0){
         ui->textBrowser->append(" device close!!!");
-        iDev=1;
+        iDev=CLOSE;
         repaint();
     }
     else {
@@ -115,33 +115,73 @@ void Widget::clearTextB()
 }
 
 void Widget::paintEvent(QPaintEvent *event) {
-    if (iDev){
-    QPainter painter(this); //новый объект "рисовальщика"
-    painter.setPen (QPen(Qt::red,Qt::SolidLine));
-    //создать и установить перо - красная сплошная линия
-   // painter.drawLine(0,0,width(),height());
-    //нарисовать линию через рабочую область формы
-    painter.setBrush(QBrush(Qt::black,Qt::SolidPattern));
-  //создать и установить кисть - зелёная слошная заливка
-  //  QPoint center(width()/2,height()/2);
-  //  int rad = qMin(width()/4,height()/4);
-  //  painter.drawRect(10.0, 20.0, 80.0, 60.0);
-  //нарисовать окружность по центру
-    painter.setFont(QFont("sans-serif",-1,10));
-  //установить шрифт заданного начертания и размера 10 пт
-    QRect rect(50,70,241,100);
-    painter.drawRect(rect);
-    QString tmp = description + "\n " + SerialNumber;
-    painter.drawText(rect, Qt::AlignCenter, tmp);
+    if (iDev == OPEN)
+    {
+        QPainter painter(this); //новый объект "рисовальщика"
+        painter.setPen (QPen(Qt::red,Qt::SolidLine));
+        //создать и установить перо - красная сплошная линия
+        // painter.drawLine(0,0,width(),height());
+        //нарисовать линию через рабочую область формы
+        painter.setBrush(QBrush(Qt::black,Qt::SolidPattern));
+        //создать и установить кисть - зелёная слошная заливка
+        //  QPoint center(width()/2,height()/2);
+        //  int rad = qMin(width()/4,height()/4);
+        //  painter.drawRect(10.0, 20.0, 80.0, 60.0);
+        //нарисовать окружность по центру
+        painter.setFont(QFont("sans-serif",-1,10));
+        //установить шрифт заданного начертания и размера 10 пт
+        QRect rect(50,70,241,100);
+        painter.drawRect(rect);
+        QString tmp = description + "\n " + SerialNumber;
+        painter.drawText(rect, Qt::AlignCenter, tmp);
 
-    QPen pen;  // перо по умолчанию
-    pen.setWidth(8); // толщина пера
-    pen.setBrush(Qt::red); // цвет пера
-    painter.setPen(pen);
+        QPen pen;  // перо по умолчанию
+        pen.setWidth(8); // толщина пера
+        pen.setBrush(Qt::red); // цвет пера
+        painter.setPen(pen);
 
-    painter.drawPoint(QPoint(270, 90));
- }
-  //вывели строку текста, выравненную по центру
+        painter.drawPoint(QPoint(270, 90));
+    }
+    if (iDev == LO_STATE)
+    {
+        QPainter painter(this); //новый объект "рисовальщика"
+        painter.setPen (QPen(Qt::red,Qt::SolidLine));
+        //создать и установить перо - красная сплошная линия
+        // painter.drawLine(0,0,width(),height());
+        //нарисовать линию через рабочую область формы
+        painter.setBrush(QBrush(Qt::black,Qt::SolidPattern));
+        //создать и установить кисть - зелёная слошная заливка
+        //  QPoint center(width()/2,height()/2);
+        //  int rad = qMin(width()/4,height()/4);
+        //  painter.drawRect(10.0, 20.0, 80.0, 60.0);
+        //нарисовать окружность по центру
+        painter.setFont(QFont("sans-serif",-1,10));
+        //установить шрифт заданного начертания и размера 10 пт
+        QRect rect(50,70,241,100);
+        painter.drawRect(rect);
+        QString tmp = description + "\n " + SerialNumber;
+        painter.drawText(rect, Qt::AlignCenter, tmp);
+
+        QPen pen;  // перо по умолчанию
+        pen.setWidth(8); // толщина пера
+        pen.setBrush(Qt::red); // цвет пера
+        painter.setPen(pen);
+
+        painter.drawPoint(QPoint(270, 90));
+
+        //  QPen pen;  // перо по умолчанию
+        pen.setWidth(3); // толщина пера
+        pen.setBrush(Qt::black); // цвет пера
+        painter.setPen(pen);
+        int x=0;
+        for (int p = 0; p<8; p++)
+        {
+
+            QLineF line(55.0 + x, 65.0, 55.0+x, 45.0);
+            painter.drawLine(line);
+            x = x+30;
+        }
+    }
 }
 void Widget::SetAllHi()
 {
@@ -152,6 +192,8 @@ void Widget::SetAllHi()
 
     if (er == 0){
         ui->textBrowser->append(" data send!!!");
+        iDev = HI_STATE;
+        repaint();
     }
     else {
         ui->textBrowser->append("Error !!! "+ readError(er));
@@ -170,6 +212,8 @@ void Widget::SetAllLo()
 
      if (er == 0){
          ui->textBrowser->append(" data send!!!");
+         iDev = LO_STATE;
+         repaint();
      }
      else {
          ui->textBrowser->append("Error !!! "+ readError(er));

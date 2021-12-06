@@ -34,6 +34,14 @@ private:
     int iDev;
     QString description;
     QString SerialNumber;
+enum
+{
+    CLOSE,
+    OPEN,
+    HI_STATE,
+    LO_STATE,
+};
+
 protected:
     void paintEvent(QPaintEvent *);
 
