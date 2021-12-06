@@ -22,7 +22,7 @@ QVector<QString> FTDI::searthDevice()
     QVector<QString> deviceInfo;
     FT_STATUS ftStatus;
     unsigned long numDevs;
-    FT_HANDLE ftHandle;
+
     // create the device information list
     ftStatus = FT_CreateDeviceInfoList(&numDevs);
     FT_DEVICE_LIST_INFO_NODE *devInfo;
@@ -135,12 +135,13 @@ int FTDI::CloseFtdi(int iDev)
         ftHandle = 0;
     }
         else {  // FT_Open failed
-        status = ftStatus;
+
         qDebug()<<" Error closing";
     }
+    status = ftStatus;
     return status;
 }
- int FTDI::SendData(int iDev, char TxBuffer, int size )
+ int FTDI::SendData( char TxBuffer, int size )
  {
      int status;
      FT_STATUS ftStatus;
@@ -154,7 +155,6 @@ int FTDI::CloseFtdi(int iDev)
 
 //  check size TxBuffer and Byte written
      status = ftStatus;
-
      return status;
  }
  int FTDI::CheckOut(UCHAR &BitMode)

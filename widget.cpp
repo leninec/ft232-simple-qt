@@ -148,7 +148,7 @@ void Widget::SetAllHi()
     UCHAR BitMode;
     qDebug()<<"widget hi";
     char data[8] = {0xff};
-    int er = myFtdi.SendData(0, data[0], 8);
+    int er = myFtdi.SendData( data[0], 8);
 
     if (er == 0){
         ui->textBrowser->append(" data send!!!");
@@ -166,7 +166,7 @@ void Widget::SetAllLo()
      UCHAR BitMode;
      qDebug()<<"widget lo";
      char data[8] = {0x00};
-     int er = myFtdi.SendData(0, data[0], 8);
+     int er = myFtdi.SendData( data[0], 8);
 
      if (er == 0){
          ui->textBrowser->append(" data send!!!");
