@@ -44,7 +44,7 @@ QVector<QString> FTDI::searthDevice()
             deviceInfo.append( "SerialNumber=" + QString::fromAscii((devInfo[i].SerialNumber)).rightJustified(50,' '));
             deviceInfo.append(("Description.=" + QString::fromAscii(((devInfo[i].Description))).rightJustified(50,' ')));
 */
-deviceInfo.append( num.setNum(i));
+            deviceInfo.append( num.setNum(i));
             deviceInfo.append(  flag.setNum(devInfo[i].Flags));
             deviceInfo.append(  id.setNum(devInfo[i].Type));
             deviceInfo.append(  flag.setNum(devInfo[i].ID));

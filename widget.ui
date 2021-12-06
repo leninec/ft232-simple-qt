@@ -17,26 +17,13 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>220</y>
+     <y>251</y>
      <width>301</width>
-     <height>192</height>
+     <height>161</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="findButton">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>220</y>
-     <width>131</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Искать FT232</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="openButton">
    <property name="geometry">
     <rect>
      <x>320</x>
@@ -46,7 +33,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Открыть</string>
+    <string>Искать FT232</string>
    </property>
   </widget>
   <widget class="QPushButton" name="clearButton">

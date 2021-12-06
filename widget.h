@@ -22,7 +22,7 @@ public:
 private slots:
     void find_Ftdi();
     void clearTextB();
-    void openFtdi();
+  //  void openFtdi();
     void closeFtdi();
     void SetAllHi();
     void SetAllLo();

@@ -16,7 +16,7 @@ Widget::Widget(QWidget *parent) :
 
     connect(ui->findButton, SIGNAL(clicked()), this, SLOT(find_Ftdi()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clearTextB()));
-    connect(ui->openButton, SIGNAL(clicked()), this, SLOT(openFtdi()));
+
     connect(ui->SEThButton, SIGNAL(clicked()), this, SLOT(SetAllHi()));
     connect(ui->SETlButton, SIGNAL(clicked()), this, SLOT(SetAllLo()));
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeFtdi()));
@@ -29,7 +29,7 @@ Widget::Widget(QWidget *parent) :
    // FTDI myFtdi;
     setWindowTitle(tr("FT232 test program"));
     ui->textBrowser->append("Start");
-    ui->openButton->hide();
+
     ui->closeButton->hide();
     ui->SEThButton->hide();
     ui->SETlButton->hide();
@@ -44,6 +44,7 @@ Widget::~Widget()
 void Widget::find_Ftdi()
 {
     qDebug()<<"open func in widget";
+    QString sEr;
     QVector<QString> Devices;
     ui->textBrowser->clear();
     int n =  this->myFtdi.getQuntatiDevice();
@@ -53,14 +54,36 @@ void Widget::find_Ftdi()
         for (int i=0; i<Devices.size(); i++)
         {
             ui->textBrowser->append(Devices[i]);
-            ui->openButton->show();
+            /*    deviceInfo.append( "Dev________N:" + num.setNum(i).rightJustified(50,' '));
+                deviceInfo.append( "Flags.......=" + flag.setNum(devInfo[i].Flags).rightJustified(50,' '));
+                deviceInfo.append( "Type........=" + id.setNum(devInfo[i].Type).rightJustified(50,' '));
+                deviceInfo.append( "ID          =" + flag.setNum(devInfo[i].ID).rightJustified(50,' '));
+                deviceInfo.append( "LocId       =" + flag.setNum(devInfo[i].LocId).rightJustified(50,' '));
+                deviceInfo.append( "SerialNumber=" + QString::fromAscii((devInfo[i].SerialNumber)).rightJustified(50,' '));
+                deviceInfo.append(("Description.=" + QString::fromAscii(((devInfo[i].Description))).rightJustified(50,' ')));
+    */
+
         }
         description  = Devices[6];
         SerialNumber = Devices[5];
+
+        int er = myFtdi.OpenFtdi();
+
+        if (er == 0){
+            ui->textBrowser->append(" device open!!!");
+            ui->SEThButton->show();
+            ui->SETlButton->show();
+            ui->closeButton->show();
+            iDev=1;
+            repaint();
+        }
+        else {
+            ui->textBrowser->append("Error !!! "+ readError(er));
+        }
     }
     if (n >1){
         ui->textBrowser->append("You have more than 1 FTDI device!!!");
-        ui->openButton->show();
+
     }
     if (n == -1){
         ui->textBrowser->append("Error !!!");
@@ -69,24 +92,7 @@ void Widget::find_Ftdi()
         ui->textBrowser->append(" Can not find any device");
     }
 }
-void Widget::openFtdi()
-{
-    QString sEr;
 
-    int er = myFtdi.OpenFtdi();
-
-    if (er == 0){
-        ui->textBrowser->append(" device open!!!");
-        ui->SEThButton->show();
-        ui->SETlButton->show();
-        ui->closeButton->show();
-        iDev=1;
-        repaint();
-    }
-    else {
-        ui->textBrowser->append("Error !!! "+ readError(er));
-    }
-}
 void Widget::closeFtdi()
 {
     QString sEr;
